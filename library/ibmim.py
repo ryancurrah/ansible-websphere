@@ -38,7 +38,7 @@ def main():
                 os.makedirs(logdir)
 
         logfile = platform.node() + "_ibmim_" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + ".xml"
-        child = subprocess.Popen([src+"/install -acceptLicense --launcher.ini "+src+"/silent-install.ini -log " + logdir+"/"+logfile], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        child = subprocess.Popen([src + "/install -acceptLicense --launcher.ini " + src + "/silent-install.ini -log " + logdir + "/" + logfile + " -installationDirectory " + dest ], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout_value, stderr_value = child.communicate()
         if child.returncode != 0:
             module.fail_json(msg="IBM IM installation failed", stderr=stderr_value, stdout=stdout_value)

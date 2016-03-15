@@ -12,9 +12,9 @@ This module installs or uninstalls IBM Installation Manager.
 ```
 # Example:
 # Install:
-ibmim: state=present src=/some/dir/install/ logdir=/tmp/im_install.log
+ibmim: state=present src=/some/dir/install/ logdir=/tmp/
 # Uninstall
-ibmim: state=abcent dest=/opt/IBM/InstallationManager
+ibmim: state=abcent src=/some/dir/install/ dest=/opt/IBM/InstallationManager
 ```
 
 ## ibmwas.py
@@ -35,6 +35,25 @@ This module installs or uninstalls IBM WebSphere products using Installation Man
 ibmwas: state=present ibmim=/opt/IBM/InstallationManager/ dest=/usr/local/WebSphere/AppServer im_shared=/usr/local/WebSphere/IMShared repo=http://example.com/was-repo/ offering=com.ibm.websphere.ND.v85
 # Uninstall:
 ibmwas: state=abcent ibmim=/opt/IBM/InstallationManager dest=/usr/local/WebSphere/AppServer/
+```
+
+## ibmxs.py
+This module installs or uninstalls IBM eXtreme Scale products using Installation Manager. 
+#### Options
+| Parameter | Required | Default | Choices | Comments |
+|:---------|:--------|:---------|:---------|:---------|
+| state | true | present | present, abcent | present=install,abcent=uninstall |
+| ibmim | true | N/A | N/A | Path to installation directory of Installation Manager |
+| dest | true | N/A | N/A | Path to destination installation directory |
+| repo | true | N/A | N/A | URL or path to the installation repository used by Installation Manager to install WebSphere products |
+| offering | true | com.ibm.websphere.ND.v85 | N/A | Name of the offering which you want to install |
+
+```
+# Example:
+# Install:
+ibmxs: state=present ibmim=/opt/IBM/InstallationManager/ dest=/usr/local/WebSphere/AppServer repo=http://example.com/was-repo/ offering=com.ibm.websphere.WXS.v86_8.6.0.20121115_1943
+# Uninstall:
+ibmxs: state=abcent ibmim=/opt/IBM/InstallationManager dest=/usr/local/WebSphere/AppServer/
 ```
 
 ## liberty_server.py
