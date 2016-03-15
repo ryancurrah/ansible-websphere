@@ -1,14 +1,14 @@
 #!/usr/bin/python
 
 #
-# Author: Amir Mofasser <amir.mofasser@gmail.com>
+=======
+# Author: Maksim fominov <mfominov@gmail.com>
 #
-# This is an Ansible module. Installs/Uninstall IBM WebSphere Application Server Binaries
+# This is an Ansible module. Installs/Uninstall IBM WebSphere Extreme Scale Server Binaries
 #
-# $IM_INSTALL_DIR/eclipse/tools/imcl install com.ibm.websphere.ND.v85
-# -repositories $ND_REPO_DIR
-# -installationDirectory $ND_INSTALL_DIR
-# -sharedResourcesDirectory $IM_SHARED_INSTALL_DIR
+# $IM_INSTALL_DIR/eclipse/tools/imcl install com.ibm.websphere.WXS.v86_8.6.0.20121115_1943
+# -repositories $XS_REPO_DIR
+# -installationDirectory $XS_INSTALL_DIR
 # -acceptLicense -showProgress
 
 import os
