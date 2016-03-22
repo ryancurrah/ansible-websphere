@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 #
-=======
+#=======
 # Author: Maksim fominov <mfominov@gmail.com>
 #
 # This is an Ansible module. Installs/Uninstall IBM WebSphere Extreme Scale Server Binaries
@@ -21,12 +21,12 @@ def main():
 
     # XS offerings
     offerings = [
-        'com.ibm.websphere.WXS.v86_8.6.0.20121115_1943',
-        'com.ibm.websphere.WXS.was7.v86_8.6.0.20121115_1953',
-        'com.ibm.websphere.WXS.was8.v86_8.6.0.20121115_1941',
-        'com.ibm.websphere.WXSCLIENT.v86_8.6.0.20121115_1948',
-        'com.ibm.websphere.WXSCLIENT.was7.v86_8.6.0.20121115_1955',
-        'com.ibm.websphere.WXSCLIENT.was8.v86_8.6.0.20121115_1954'
+        'com.ibm.websphere.WXS.v86',
+        'com.ibm.websphere.WXS.was7.v86',
+        'com.ibm.websphere.WXS.was8.v86',
+        'com.ibm.websphere.WXSCLIENT.v86',
+        'com.ibm.websphere.WXSCLIENT.was7.v86',
+        'com.ibm.websphere.WXSCLIENT.was8.v86'
     ]
 
     # Read arguments
@@ -36,7 +36,7 @@ def main():
             ibmim     = dict(required=True),
             dest      = dict(required=True),
             repo      = dict(required=False),
-            offering  = dict(default='com.ibm.websphere.WXS.v86_8.6.0.20121115_1943', choices=offerings),
+            offering  = dict(default='com.ibm.websphere.WXS.v86', choices=offerings),
             logdir    = dict(required=False)
         )
     )
