@@ -15,7 +15,7 @@ def check_im_installed(dest):
     child = subprocess.Popen([dest + "/eclipse/tools/imcl listInstalledPackages"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout_value, stderr_value = child.communicate()
     if stdout_value.find("com.ibm.cic.agent") < 0:
-            return True
+        return True
 
 def main():
 
