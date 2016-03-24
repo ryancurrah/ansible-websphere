@@ -17,6 +17,12 @@ import platform
 import datetime
 import shutil
 
+def check_xs_installed(ibmim):
+    child = subprocess.Popen([ibmim + "/eclipse/tools/imcl listInstalledPackages"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout_value, stderr_value = child.communicate()
+    if stdout_value.find("com.ibm.websphere.WXS") < 0:
+            return True
+
 def main():
 
     # XS offerings
@@ -47,36 +53,41 @@ def main():
     repo = module.params['repo']
     offering = module.params['offering']
     logdir = module.params['logdir']
-    logfile = platform.node() + "_xs_" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + ".xml"
 
     # Check if paths are valid
-    if not os.path.exists(ibmim+"/eclipse"):
-        module.fail_json(msg=ibmim+"/eclipse not found")
+    if not os.path.exists(ibmim + "/eclipse"):
+        module.fail_json(msg=ibmim + "/eclipse not found")
 
     # Installation
     if state == 'present':
-        child = subprocess.Popen([ibmim + "/eclipse/tools/imcl install " + offering + " -repositories " + repo + " -installationDirectory " + dest + " -acceptLicense -showProgress -log " + logdir + "/" + logfile], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout_value, stderr_value = child.communicate()
-        if child.returncode != 0:
-            module.fail_json(msg="XS install failed", stdout=stdout_value, stderr=stderr_value)
+        if not check_xs_installed(ibmim):
+            child = subprocess.Popen([ibmim + "/eclipse/tools/imcl install " + offering + " -repositories " + repo + " -installationDirectory " + dest + " -acceptLicense"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout_value, stderr_value = child.communicate()
+            if child.returncode != 0:
+                module.fail_json(msg="XS install failed", stdout=stdout_value, stderr=stderr_value)
 
-        module.exit_json(changed=True, msg="XS installed successfully", stdout=stdout_value)
+        if not check_xs_installed(ibmim):
+            module.exit_json(changed=False, msg="XS already installed")
+        else:
+            module.exit_json(changed=True, msg="XS installed successfully", stdout=stdout_value)
 
     # Uninstall
     if state == 'absent':
         if not os.path.exists(logdir):
             if not os.listdir(logdir):
                 os.makedirs(logdir)
-        child = subprocess.Popen([ibmim + "/eclipse/tools/imcl uninstall " + offering + " -installationDirectory " + dest + " -log " + logdir + "/" + logfile], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout_value, stderr_value = child.communicate()
-        if child.returncode != 0:
-            module.fail_json(msg="XS uninstall failed", stdout=stdout_value, stderr=stderr_value)
+        if check_xs_installed(ibmim):
+            logfile = platform.node() + "_xs_" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + ".xml"
+            child = subprocess.Popen([ibmim + "/eclipse/tools/imcl uninstall " + offering + " -installationDirectory " + dest + " -log " + logdir + "/" + logfile], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout_value, stderr_value = child.communicate()
+            if child.returncode != 0:
+                module.fail_json(msg="XS uninstall failed", stdout=stdout_value, stderr=stderr_value)
+            shutil.rmtree(dest, ignore_errors=False, onerror=None)
 
-        # Remove AppServer dir forcefully so that it doesn't prevents us from
-        # reinstalling.
-        #shutil.rmtree(dest, ignore_errors=False, onerror=None)
-
-        module.exit_json(changed=True, msg="XS uninstalled successfully", stdout=stdout_value)
+        if check_xs_installed(ibmim):
+            module.exit_json(changed=False, msg="XS already uninstalled")
+        else:
+            module.exit_json(changed=True, msg="XS uninstalled successfully", stdout=stdout_value)
 
 # import module snippets
 from ansible.module_utils.basic import *

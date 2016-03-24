@@ -26,16 +26,12 @@ def check_profile_exist(name, wasdir):
     stdout_value, stderr_value = child.communicate()
     if stdout_value.find(name) < 0:
         return True
-    else:
-        return
 
 def check_node_added(node_name, wasdir, username, password):
     child = subprocess.Popen([wasdir + "/bin/wsadmin.sh -lang jython -username " + username + " -password " + password + " -c 'print AdminTask.listNodes()'"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout_value, stderr_value = child.communicate()
     if not stdout_value.find(node_name) < 0:
         return True
-    else:
-        return
 
 def main():
 
@@ -97,7 +93,7 @@ def main():
 
     # Remove a profile
     if state == 'absent':
-        if not check_profile_exist(node_name, wasdir):
+        if check_profile_exist(node_name, wasdir):
             child = subprocess.Popen([wasdir + "/bin/manageprofiles.sh -delete -profileName " + name], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout_value, stderr_value = child.communicate()
             if child.returncode != 0:
@@ -109,7 +105,7 @@ def main():
                 else:
                     module.fail_json(msg="Nodeagent profile removal failed", stdout=stdout_value, stderr=stderr_value)
         if federate:
-            if not check_node_added(node_name, wasdir, username, password):
+            if check_node_added(node_name, wasdir, username, password):
                 child = subprocess.Popen([wasdir + "/bin/removeNode.sh " + dmgr_host + " " + dmgr_port + " -conntype SOAP -username " + username + " -password " + password + " -profileName " + name], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 stdout_value, stderr_value = child.communicate()
                 if child.returncode != 0:

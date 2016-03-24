@@ -17,6 +17,12 @@ import platform
 import datetime
 import shutil
 
+def check_was_installed(ibmim):
+    child = subprocess.Popen([ibmim + "/eclipse/tools/imcl listInstalledPackages"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout_value, stderr_value = child.communicate()
+    if stdout_value.find("com.ibm.websphere.ND") < 0:
+            return True
+
 def main():
 
     # WAS offerings
@@ -53,34 +59,39 @@ def main():
     logdir = module.params['logdir']
 
     # Check if paths are valid
-    if not os.path.exists(ibmim+"/eclipse"):
-        module.fail_json(msg=ibmim+"/eclipse not found")
+    if not os.path.exists(ibmim + "/eclipse"):
+        module.fail_json(msg=ibmim + "/eclipse not found")
 
     # Installation
     if state == 'present':
-        child = subprocess.Popen([ibmim+"/eclipse/tools/imcl install " + offering + " -repositories " + repo + " -installationDirectory " + dest + " -sharedResourcesDirectory " + im_shared + " -acceptLicense -showProgress -properties user.ihs.httpPort=" + str(ihs_port)], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout_value, stderr_value = child.communicate()
-        if child.returncode != 0:
-            module.fail_json(msg="WAS ND install failed", stdout=stdout_value, stderr=stderr_value)
+        if not check_was_installed(ibmim):
+            child = subprocess.Popen([ibmim + "/eclipse/tools/imcl install " + offering + " -repositories " + repo + " -installationDirectory " + dest + " -sharedResourcesDirectory " + im_shared + " -acceptLicense -showProgress -properties user.ihs.httpPort=" + str(ihs_port)], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout_value, stderr_value = child.communicate()
+            if child.returncode != 0:
+                module.fail_json(msg="WAS ND install failed", stdout=stdout_value, stderr=stderr_value)
 
-        module.exit_json(changed=True, msg="WAS ND installed successfully", stdout=stdout_value)
+        if not check_was_installed(ibmim):
+            module.exit_json(changed=False, msg="WAS ND already installed")
+        else:
+            module.exit_json(changed=True, msg="WAS ND installed successfully", stdout=stdout_value)
 
     # Uninstall
     if state == 'absent':
         if not os.path.exists(logdir):
             if not os.listdir(logdir):
                 os.makedirs(logdir)
-        logfile = platform.node() + "_wasnd_" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + ".xml"
-        child = subprocess.Popen([ibmim+"/eclipse/IBMIM --launcher.ini " + ibmim + "/eclipse/silent-install.ini -input " + dest + "/uninstall/uninstall.xml -log " + logdir+"/"+logfile], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout_value, stderr_value = child.communicate()
-        if child.returncode != 0:
-            module.fail_json(msg="WAS ND uninstall failed", stdout=stdout_value, stderr=stderr_value)
+        if check_was_installed(ibmim):
+            logfile = platform.node() + "_wasnd_" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + ".xml"
+            child = subprocess.Popen([ibmim + "/eclipse/IBMIM --launcher.ini " + ibmim + "/eclipse/silent-install.ini -input " + dest + "/uninstall/uninstall.xml -log " + logdir + "/" + logfile], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout_value, stderr_value = child.communicate()
+            if child.returncode != 0:
+                module.fail_json(msg="WAS ND uninstall failed", stdout=stdout_value, stderr=stderr_value)
+            shutil.rmtree(dest, ignore_errors=False, onerror=None)
 
-        # Remove AppServer dir forcefully so that it doesn't prevents us from
-        # reinstalling.
-        shutil.rmtree(dest, ignore_errors=False, onerror=None)
-
-        module.exit_json(changed=True, msg="WAS ND uninstalled successfully", stdout=stdout_value)
+        if check_was_installed(ibmim):
+            module.exit_json(changed=False, msg="WAS ND already uninstalled")
+        else:
+            module.exit_json(changed=True, msg="WAS ND uninstalled successfully", stdout=stdout_value)
 
 # import module snippets
 from ansible.module_utils.basic import *
