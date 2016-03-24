@@ -32,7 +32,7 @@ def main():
     # Read arguments
     module = AnsibleModule(
         argument_spec = dict(
-            state     = dict(default='present', choices=['present', 'abcent']),
+            state     = dict(default='present', choices=['present', 'absent']),
             ibmim     = dict(required=True),
             dest      = dict(required=True),
             repo      = dict(required=False),
@@ -63,7 +63,7 @@ def main():
         module.exit_json(changed=True, msg="XS installed successfully", stdout=stdout_value)
 
     # Uninstall
-    if state == 'abcent':
+    if state == 'absent':
         if not os.path.exists(logdir):
             if not os.listdir(logdir):
                 os.makedirs(logdir)

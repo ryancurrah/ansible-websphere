@@ -5,7 +5,7 @@ This module installs or uninstalls IBM Installation Manager.
 #### Options
 | Parameter | Required | Default | Choices | Comments |
 |:---------|:--------|:---------|:---------|:---------|
-| state | true | N/A | present, abcent | present=install, abcent=uninstall |
+| state | true | N/A | present, absent | present=install, absent=uninstall |
 | src | true | N/A | N/A | Path to installation files for Installation Manager |
 | dest | false | N/A | /opt/IBM/InstallationManager | Path to desired installation directory of Installation Manager |
 | logdir | false | N/A | N/A | Path and file name of installation log file |
@@ -14,7 +14,7 @@ This module installs or uninstalls IBM Installation Manager.
 # Install:
 ibmim: state=present src=/some/dir/install/ logdir=/tmp/
 # Uninstall
-ibmim: state=abcent src=/some/dir/install/ dest=/opt/IBM/InstallationManager
+ibmim: state=absent src=/some/dir/install/ dest=/opt/IBM/InstallationManager
 ```
 
 ## ibmwas.py
@@ -22,7 +22,7 @@ This module installs or uninstalls IBM WebSphere products using Installation Man
 #### Options
 | Parameter | Required | Default | Choices | Comments |
 |:---------|:--------|:---------|:---------|:---------|
-| state | true | present | present, abcent | present=install,abcent=uninstall |
+| state | true | present | present, absent | present=install,absent=uninstall |
 | ibmim | true | N/A | N/A | Path to installation directory of Installation Manager |
 | dest | true | N/A | N/A | Path to destination installation directory |
 | im_shared | true | N/A | N/A | Path to Installation Manager shared resources folder |
@@ -34,7 +34,7 @@ This module installs or uninstalls IBM WebSphere products using Installation Man
 # Install:
 ibmwas: state=present ibmim=/opt/IBM/InstallationManager/ dest=/usr/local/WebSphere/AppServer im_shared=/usr/local/WebSphere/IMShared repo=http://example.com/was-repo/ offering=com.ibm.websphere.ND.v85
 # Uninstall:
-ibmwas: state=abcent ibmim=/opt/IBM/InstallationManager dest=/usr/local/WebSphere/AppServer/
+ibmwas: state=absent ibmim=/opt/IBM/InstallationManager dest=/usr/local/WebSphere/AppServer/
 ```
 
 ## ibmxs.py
@@ -42,7 +42,7 @@ This module installs or uninstalls IBM eXtreme Scale products using Installation
 #### Options
 | Parameter | Required | Default | Choices | Comments |
 |:---------|:--------|:---------|:---------|:---------|
-| state | true | present | present, abcent | present=install,abcent=uninstall |
+| state | true | present | present, absent | present=install,absent=uninstall |
 | ibmim | true | N/A | N/A | Path to installation directory of Installation Manager |
 | dest | true | N/A | N/A | Path to destination installation directory |
 | repo | true | N/A | N/A | URL or path to the installation repository used by Installation Manager to install WebSphere products |
@@ -53,7 +53,7 @@ This module installs or uninstalls IBM eXtreme Scale products using Installation
 # Install:
 ibmxs: state=present ibmim=/opt/IBM/InstallationManager/ dest=/usr/local/WebSphere/AppServer repo=http://example.com/was-repo/ offering=com.ibm.websphere.WXS.v86_8.6.0.20121115_1943
 # Uninstall:
-ibmxs: state=abcent ibmim=/opt/IBM/InstallationManager dest=/usr/local/WebSphere/AppServer/
+ibmxs: state=absent ibmim=/opt/IBM/InstallationManager dest=/usr/local/WebSphere/AppServer/
 ```
 
 ## liberty_server.py
@@ -77,7 +77,7 @@ This module creates or removes a WebSphere Application Server Deployment Manager
 #### Options
 | Parameter | Required | Default | Choices | Comments |
 |:---------|:--------|:---------|:---------|:---------|
-| state | true | present | present,abcent | present=create,abcent=remove |
+| state | true | present | present,absent | present=create,absent=remove |
 | wasdir | true | N/A | N/A | Path to installation location of WAS |
 | name | true | N/A | N/A | Name of the profile |
 | cell_name | true | N/A | N/A | Name of the cell |
@@ -90,7 +90,7 @@ This module creates or removes a WebSphere Application Server Deployment Manager
 # Create:
 profile_dmgr: state=present wasdir=/usr/local/WebSphere/AppServer/ name=dmgr cell_name=devCell host_name=localhost node_name=devcell-dmgr username=admin password=allyourbasearebelongtous
 # Remove:
-profile_dmgr: state=abcent wasdir=/usr/local/WebSphere/AppServer/ name=dmgr
+profile_dmgr: state=absent wasdir=/usr/local/WebSphere/AppServer/ name=dmgr
 ```
 
 ## profile_liberty.py
@@ -98,7 +98,7 @@ This module creates or removes a Liberty Profile server runtime
 #### Options
 | Parameter | Required | Default | Choices | Comments |
 |:---------|:--------|:---------|:---------|:---------|
-| state | true | present | present,abcent | present=create,abcent=remove |
+| state | true | present | present,absent | present=create,absent=remove |
 | libertydir | true | N/A | N/A | Path to install location of Liberty Profile binaries |
 | name | true | N/A | N/A | Name of the server which is to be created/removed |
 ```
@@ -106,7 +106,7 @@ This module creates or removes a Liberty Profile server runtime
 # Create:
 profile_liberty: state=present libertydir=/usr/local/WebSphere/Liberty/ name=server01
 # Remove
-profile_liberty: state=abcent libertydir=/usr/local/WebSphere/Liberty/ name=server01
+profile_liberty: state=absent libertydir=/usr/local/WebSphere/Liberty/ name=server01
 ```
 
 ## profile_nodeagent.py
@@ -114,9 +114,10 @@ This module creates or removes a WebSphere Application Server Node Agent profile
 #### Options
 | Parameter | Required | Default | Choices | Comments |
 |:---------|:--------|:---------|:---------|:---------|
-| state | true | present | present,abcent | present=create,abcent=remove |
+| state | true | present | present,absent | present=create,absent=remove |
 | wasdir | true | N/A | N/A | Path to installation location of WAS |
 | name | true | N/A | N/A | Name of the profile |
+| template | true | N/A | N/A | WAS template profile |
 | cell_name | true | N/A | N/A | Name of the cell |
 | host_name | true | N/A | N/A | Host Name |
 | node_name | true | N/A | N/A | Node name of this profile |
@@ -130,5 +131,5 @@ This module creates or removes a WebSphere Application Server Node Agent profile
 # Create 
 profile_nodeagent: state=present wasdir=/usr/local/WebSphere/AppServer/ name=nodeagent cell_name=devCellTmp host_name=localhost node_name=devcell-node1 username=admin password=allyourbasearebelongtous dmgr_host=localhost dmgr_port=8879 federate=true
 # Remove:
-profile_dmgr: state=abcent wasdir=/usr/local/WebSphere/AppServer/ name=nodeagent
+profile_dmgr: state=absent wasdir=/usr/local/WebSphere/AppServer/ name=nodeagent
 ```
