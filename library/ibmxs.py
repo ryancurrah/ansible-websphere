@@ -65,8 +65,6 @@ def main():
             stdout_value, stderr_value = child.communicate()
             if child.returncode != 0:
                 module.fail_json(msg="XS install failed", stdout=stdout_value, stderr=stderr_value)
-
-        if check_xs_installed(ibmim):
             module.exit_json(changed=True, msg="XS installed successfully", stdout=stdout_value)
         else:
             module.exit_json(changed=False, msg="XS already installed")
@@ -83,8 +81,6 @@ def main():
             if child.returncode != 0:
                 module.fail_json(msg="XS uninstall failed", stdout=stdout_value, stderr=stderr_value)
             shutil.rmtree(dest, ignore_errors=False, onerror=None)
-
-        if check_xs_installed(ibmim):
             module.exit_json(changed=True, msg="XS uninstalled successfully", stdout=stdout_value)
         else:
             module.exit_json(changed=False, msg="XS already uninstalled")

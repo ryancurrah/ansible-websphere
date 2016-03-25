@@ -69,8 +69,6 @@ def main():
             stdout_value, stderr_value = child.communicate()
             if child.returncode != 0:
                 module.fail_json(msg="WAS ND install failed", stdout=stdout_value, stderr=stderr_value)
-
-        if check_was_installed(ibmim):
             module.exit_json(changed=True, msg="WAS ND installed successfully", stdout=stdout_value)
         else:
             module.exit_json(changed=False, msg="WAS ND already installed")
@@ -87,8 +85,6 @@ def main():
             if child.returncode != 0:
                 module.fail_json(msg="WAS ND uninstall failed", stdout=stdout_value, stderr=stderr_value)
             shutil.rmtree(dest, ignore_errors=False, onerror=None)
-
-        if not check_was_installed(ibmim):
             module.exit_json(changed=True, msg="WAS ND uninstalled successfully", stdout=stdout_value)
         else:
             module.exit_json(changed=False, msg="WAS ND already uninstalled")
