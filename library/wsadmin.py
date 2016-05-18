@@ -2,7 +2,6 @@
 
 # Run a wsadmin script.
 #
-# DO NOT USE THIS MODULE. UNDER DEVELOPMENT
 #
 # wsadmin.sh -lang jython
 # -conntype SOAP
@@ -22,7 +21,7 @@ def main():
     # Read arguments
     module = AnsibleModule(
         argument_spec = dict(
-            params = dict(required=False),
+            params = dict(default=' ', required=False),
             wasdir = dict(required=True),
             host = dict(default='localhost', required=False),
             port = dict(default='8879', required=False),
@@ -42,7 +41,7 @@ def main():
 
     # Run wsadmin command server
 #    if state == 'stopped':
-    child = subprocess.Popen([wasdir + "/bin/wsadmin.sh -lang jython -conntype SOAP -host " + host + " -port " + port + " -username " + username + " -password " + password " -f " + script + " " + params], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    child = subprocess.Popen([wasdir + "/bin/wsadmin.sh -lang jython -conntype SOAP -host " + host + " -port " + port + " -username " + username + " -password " + password + " -f " + script + " " + params], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout_value, stderr_value = child.communicate()
     if child.returncode != 0:
         module.fail_json(msg="Failed executing wsadmin script: " + ¨script, stdout=stdout_value, stderr=stderr_value)
