@@ -5,10 +5,10 @@ This module installs or uninstalls IBM Installation Manager.
 #### Options
 | Parameter | Required | Default | Choices | Comments |
 |:---------|:--------|:---------|:---------|:---------|
-| state | true | N/A | present, absent | present=install, absent=uninstall |
+| state | false | present | present, absent | present=install, absent=uninstall |
 | src | true | N/A | N/A | Path to installation files for Installation Manager |
-| dest | false | N/A | /opt/IBM/InstallationManager | Path to desired installation directory of Installation Manager |
-| logdir | false | N/A | N/A | Path and file name of installation log file |
+| dest | false | /opt/IBM/InstallationManager | N/A | Path to desired installation directory of Installation Manager |
+| logdir | false | /var/log/IBM/InstallationManager | N/A | Path and file name of installation log file |
 ```
 # Example:
 # Install:
@@ -22,12 +22,14 @@ This module installs or uninstalls IBM WebSphere products using Installation Man
 #### Options
 | Parameter | Required | Default | Choices | Comments |
 |:---------|:--------|:---------|:---------|:---------|
-| state | true | present | present, absent | present=install,absent=uninstall |
-| ibmim | true | N/A | N/A | Path to installation directory of Installation Manager |
-| dest | true | N/A | N/A | Path to destination installation directory |
+| state | false | present | present, absent | present=install,absent=uninstall |
+| ibmim | false | /opt/IBM/InstallationManager | N/A | Path to installation directory of Installation Manager |
+| dest | false | /opt/IBM/WebSphere | N/A | Path to destination installation directory |
 | im_shared | true | N/A | N/A | Path to Installation Manager shared resources folder |
 | repo | true | N/A | N/A | URL or path to the installation repository used by Installation Manager to install WebSphere products |
-| offering | true | com.ibm.websphere.ND.v85 | N/A | Name of the offering which you want to install |
+| offering | false | com.ibm.websphere.ND.v85 | com.ibm.websphere.ND.v85,com.ibm.websphere.IHS.v85,com.ibm.websphere.PLG.v85,com.ibm.websphere.WCT.v85,com.ibm.websphere.liberty.IBMJAVA.v70,com.ibm.websphere.liberty.v85 | Name of the offering which you want to install |
+| ihs_port | false | 8080 | N/A | Port for IBM HTTP Server
+| logdir | false | /var/log/IBM/WebSphere | N/A | Path of installation log file
 
 ```
 # Example:
@@ -42,11 +44,11 @@ This module installs or uninstalls IBM eXtreme Scale products using Installation
 #### Options
 | Parameter | Required | Default | Choices | Comments |
 |:---------|:--------|:---------|:---------|:---------|
-| state | true | present | present, absent | present=install,absent=uninstall |
-| ibmim | true | N/A | N/A | Path to installation directory of Installation Manager |
-| dest | true | N/A | N/A | Path to destination installation directory |
+| state | false | present | present, absent | present=install,absent=uninstall |
+| ibmim | false | /opt/IBM/InstallationManager | N/A | Path to installation directory of Installation Manager |
+| dest | false | /opt/IBM/ExtremeScale | N/A | Path to destination installation directory |
 | repo | true | N/A | N/A | URL or path to the installation repository used by Installation Manager to install WebSphere products |
-| offering | true | com.ibm.websphere.ND.v85 | N/A | Name of the offering which you want to install |
+| offering | false | com.ibm.websphere.WXS.v86 | com.ibm.websphere.WXS.v86",com.ibm.websphere.WXS.was7.v86,com.ibm.websphere.WXS.was8.v86,com.ibm.websphere.WXSCLIENT.v86,com.ibm.websphere.WXSCLIENT.was7.v86,com.ibm.websphere.WXSCLIENT.was8.v86 | Name of the offering which you want to install |
 
 ```
 # Example:
@@ -61,9 +63,10 @@ This module start os stops a Liberty Profile server
 #### Options
 | Parameter | Required | Default | Choices | Comments |
 |:---------|:--------|:---------|:---------|:---------|
-| state | true | started | started, stopped | N/A |
+| state | false | started | started, stopped | N/A |
 | name | true | N/A | N/A | Name of the app server |
 | libertydir | true | N/A | N/A | Path to binary files of the application server |
+
 ```
 # Example:
 # Start:
@@ -77,14 +80,17 @@ This module creates or removes a WebSphere Application Server Deployment Manager
 #### Options
 | Parameter | Required | Default | Choices | Comments |
 |:---------|:--------|:---------|:---------|:---------|
-| state | true | present | present,absent | present=create,absent=remove |
-| wasdir | true | N/A | N/A | Path to installation location of WAS |
+| state | false | present | present,absent | present=create,absent=remove |
+| wasdir | false | /opt/IBM/WebSphere | N/A | Path to installation location of WAS |
 | name | true | N/A | N/A | Name of the profile |
-| cell_name | true | N/A | N/A | Name of the cell |
 | host_name | true | N/A | N/A | Host Name |
 | node_name | true | N/A | N/A | Node name of this profile |
-| username | true | N/A | N/A | Administrative user name |
-| password | true | N/A | N/A | Administrative user password |
+| cell_name | false | was_cell | N/A | Name of the cell |
+| username | false | wasadmin | N/A | Administrative user name |
+| password | false | wasadmin | N/A | Administrative user password |
+| enable_service | false | false | N/A | Enable the profile service|
+| service_username | false | N/A | N/A | Service username|
+
 ```
 # Example:
 # Create:
@@ -98,7 +104,7 @@ This module creates or removes a Liberty Profile server runtime
 #### Options
 | Parameter | Required | Default | Choices | Comments |
 |:---------|:--------|:---------|:---------|:---------|
-| state | true | present | present,absent | present=create,absent=remove |
+| state | false | present | present,absent | present=create,absent=remove |
 | libertydir | true | N/A | N/A | Path to install location of Liberty Profile binaries |
 | name | true | N/A | N/A | Name of the server which is to be created/removed |
 ```
@@ -114,18 +120,21 @@ This module creates or removes a WebSphere Application Server Node Agent profile
 #### Options
 | Parameter | Required | Default | Choices | Comments |
 |:---------|:--------|:---------|:---------|:---------|
-| state | true | present | present,absent | present=create,absent=remove |
-| wasdir | true | N/A | N/A | Path to installation location of WAS |
+| state | false | present | present,absent | present=create,absent=remove |
+| wasdir | false | /opt/IBM/WebSphere | N/A | Path to installation location of WAS |
 | name | true | N/A | N/A | Name of the profile |
 | template | true | N/A | N/A | WAS template profile |
-| cell_name | true | N/A | N/A | Name of the cell |
 | host_name | true | N/A | N/A | Host Name |
 | node_name | true | N/A | N/A | Node name of this profile |
-| username | true | N/A | N/A | Administrative user name of the deployment manager |
-| password | true | N/A | N/A | Administrative user password of the deployment manager |
+| cell_name | False | was_cell | N/A | Name of the cell |
+| username | false | wasadmin | N/A | Administrative user name of the deployment manager |
+| password | true | wasadmin | N/A | Administrative user password of the deployment manager |
 | dmgr_host | true | N/A | N/A | Host name of the Deployment Manager |
-| dmgr_port | true | N/A | N/A | SOAP port number of the Deployment Manager |
+| dmgr_port | false | 8879 | N/A | SOAP port number of the Deployment Manager |
 | federate | false | N/A | N/A | Wether the node should be federated to a cell. If true, cell name cannot be the same as the cell name of the deployment manager. |
+| enable_service | false | false | N/A | Enable the profile service|
+| service_username | false | N/A | N/A | Service username|
+
 ```
 # Example:
 # Create 
